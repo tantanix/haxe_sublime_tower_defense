@@ -1,0 +1,16 @@
+-swf-lib Lib/starling.swf
+--macro "patchTypes('starling.patch')"
+-swf Export/haxe_sublime_tower_defense.swf
+-main mycompany/towerdefense/Main.hx
+-lib spritesheet:1.11
+-lib ash:1.5
+-lib minject:1.2.0
+-lib actuate:1.61
+-lib nme:3.5.5
+-resource Assets/monster.xml@monster_data
+-D as3_native
+#-D fdb
+-swf-version 11.4
+-swf-header 1024:768:60:FFFFFF
+-debug
+-cp Source

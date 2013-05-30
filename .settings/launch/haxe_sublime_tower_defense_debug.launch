@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.powerflasher.fdt.ui.ViewerLaunchGroup">
+<booleanAttribute key="KILL_PREVIOUS_VIEWER" value="true"/>
+<stringAttribute key="MAIN_CLASS" value="Export/output.html"/>
+<intAttribute key="PLAYER_HEIGHT" value="768"/>
+<intAttribute key="PLAYER_WIDTH" value="1024"/>
+<stringAttribute key="PROJECT_NAME" value="haxe_sublime_tower_defense"/>
+<stringAttribute key="START_SWF_WITH" value="External SWF Viewer"/>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+</listAttribute>
+</launchConfiguration>
