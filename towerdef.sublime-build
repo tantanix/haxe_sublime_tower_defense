@@ -1,8 +1,0 @@
-{
-	"cmd": [
-		"\\Users\\christiannoelmascarinas\\Documents\\flex_sdk_4.6\\bin\\mxmlc.exe",
-		//"-o", "${project_base_name}.swf",
-		"${file}"
-	],
-	"selector": "source.actionscript"
-}
