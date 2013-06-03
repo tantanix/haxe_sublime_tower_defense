@@ -1,6 +1,8 @@
+.DS_Store
 Export
 .settings
 .hxtypes
+.project
 *.sublime-build
 *.sublime-project
 *.sublime-workspace
