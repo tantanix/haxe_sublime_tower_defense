@@ -50,33 +50,6 @@ class TileRenderSystem extends System {
 			
 			cast(displayObject, DisplayObject).x = position.position.x;
 			cast(displayObject, DisplayObject).y = position.position.y;
-
-			// Determine direction
-	        if (direction.x > 0) {
-	            if (direction.y > 0) {
-	                displayObject.direction = TileDirection.E;
-	            } else if (direction.y < 0) {
-	                displayObject.direction = TileDirection.N;
-	            } else {
-	                displayObject.direction = TileDirection.NE;
-	            }
-	        } else if (direction.x < 0) {
-	            if (direction.y > 0) {
-	                displayObject.direction = TileDirection.S;
-	            } else if (direction.y < 0) {
-	                displayObject.direction = TileDirection.W;
-	            } else {
-	                displayObject.direction = TileDirection.SW;
-	            }
-	        } else {
-	            if (direction.y > 0) {
-	                displayObject.direction = TileDirection.SE;
-	            } else if (direction.y < 0) {
-	                displayObject.direction = TileDirection.NW;
-	            } else {
-	                displayObject.direction = TileDirection.NONE;
-	            }
-	        }
 		}
 	}
 	

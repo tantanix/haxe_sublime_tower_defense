@@ -1,8 +1,10 @@
 package mycompany.towerdefense;
+import ash.fsm.EntityStateMachine;
 import flash.geom.Point;
 import minject.Injector;
 import mycompany.towerdefense.components.Bullet;
 import mycompany.towerdefense.components.Collision;
+import mycompany.towerdefense.components.FsmController;
 import mycompany.towerdefense.GameConfig;
 import mycompany.towerdefense.components.GameState;
 import mycompany.towerdefense.components.Monster;
@@ -81,62 +83,89 @@ class EntityCreator {
 		var pathNodes:Array<INode> = SearchHelper.findPath(currentTile, goalTile, map.findConnectedTiles);
 		map.drawPath(pathNodes);
 
-		var view:MonsterView = new MonsterView();
-		injector.injectInto(view);
-		
-		var monster:Entity = new Entity()
-			.add(new Monster(5))
+		var monsterAtlas:TextureAtlas = am.getTextureAtlas("monsterAtlas");
+		var walkingN = new MovieClip(monsterAtlas.getTextures("walking n0"), 8);
+		var walkingNW = new MovieClip(monsterAtlas.getTextures("walking nw"), 8);
+		var walkingNE = new MovieClip(monsterAtlas.getTextures("walking ne"), 8);
+		var walkingS = new MovieClip(monsterAtlas.getTextures("walking s0"), 8);
+		var walkingSE = new MovieClip(monsterAtlas.getTextures("walking se"), 8);
+		var walkingSW = new MovieClip(monsterAtlas.getTextures("walking sw"), 8);
+		var walkingE = new MovieClip(monsterAtlas.getTextures("walking e0"), 8);
+		var walkingW = new MovieClip(monsterAtlas.getTextures("walking w0"), 8);
+
+		var monster:Entity = new Entity();
+
+		// Setup the state machine
+		var fsm:EntityStateMachine = new EntityStateMachine(monster);
+		fsm.createState("walkingN")
+			.add(Display).withInstance(new Display(new MonsterView(walkingNE)));
+		fsm.createState("walkingNW")
+			.add(Display).withInstance(new Display(new MonsterView(walkingN)));
+		fsm.createState("walkingNE")
+			.add(Display).withInstance(new Display(new MonsterView(walkingE)));
+		fsm.createState("walkingS")
+			.add(Display).withInstance(new Display(new MonsterView(walkingSW)));
+		fsm.createState("walkingSE")
+			.add(Display).withInstance(new Display(new MonsterView(walkingS)));
+		fsm.createState("walkingSW")
+			.add(Display).withInstance(new Display(new MonsterView(walkingW)));
+		fsm.createState("walkingE")
+			.add(Display).withInstance(new Display(new MonsterView(walkingSE)));
+		fsm.createState("walkingW")
+			.add(Display).withInstance(new Display(new MonsterView(walkingNW)));
+
+		// Add the rest of the components that are common to each state
+		monster.add(new Monster(5))
 			.add(new Position(currentTile.x, currentTile.y))
 			.add(new Collision(collisionRadius))
 			.add(new Tile(currentTile, pathNodes))
 			.add(new Vector2(0, 0))
 			.add(new Motion(40, 40, 0, 0))
-			.add(new TileDisplay(view));
+			.add(new FsmController(fsm));
+		
+		fsm.changeState("walkingNE");
+
 		engine.addEntity(monster);
 		return monster;
 	}
 
 	public function createTower(currentTile:INode, towerType:TowerType, level:Int, collisionRadius:Float):Entity 
 	{
-		var minimumShotInterval:Float = switch (towerType) {
-			case TowerType.FIRE : 1 / level;
-			case TowerType.ICE : 2 / level;
-			case TowerType.LIGHTNING : 0.5 / level;
-		}
-
 		var view:TowerView = new TowerView(towerType, level);
 		injector.injectInto(view);
 		
 		var tower:Entity = new Entity()
-			.add(new Tower(towerType, level, minimumShotInterval))
+			.add(new Tower(towerType, level, switch (towerType) {
+												case TowerType.FIRE : 1 / level;
+												case TowerType.ICE : 2 / level;
+												case TowerType.LIGHTNING : 0.5 / level;
+											}))
 			.add(new Position(currentTile.x, currentTile.y))
 			.add(new Collision(collisionRadius))
 			.add(new Tile(currentTile))
 			.add(new Vector2(0, 0))
-			.add(new TileDisplay(view));
+			.add(new Display(view));
 		engine.addEntity(tower);
 		return tower;
 	}
 
-	public function createBullet(currentTile:INode, towerType:TowerType, level:Int, collisionRadius:Float):Entity
+	public function createBullet(position:Position, currentTile:INode, towerType:TowerType, level:Int, collisionRadius:Float):Entity
 	{
-		var motion:Motion = switch (towerType) {
-			case TowerType.FIRE : new Motion(10, 10, 0, 0);
-			case TowerType.ICE : new Motion(5, 5, 0, 0);
-			case TowerType.LIGHTNING : new Motion(0, 0, 0, 0);
-		}
-
 		var view:BulletView = new BulletView(towerType, level);
 		injector.injectInto(view);
 
 		var bullet:Entity = new Entity()
 			.add(new Bullet())
-			.add(new Position(currentTile.x, currentTile.y))
+			.add(new Position(position.position.x, position.position.y))
 			.add(new Collision(collisionRadius))
-			.add(motion)
+			.add(switch (towerType) {
+					case TowerType.FIRE : new Motion(40, 40, 0, 0);
+					case TowerType.ICE : new Motion(1, 1, 0, 0);
+					case TowerType.LIGHTNING : new Motion(1, 1, 0, 0);
+				})
 			.add(new Tile(currentTile))
 			.add(new Vector2(0, 0))
-			.add(new TileDisplay(view));
+			.add(new Display(view));
 		engine.addEntity(bullet);
 		return bullet;
 	}

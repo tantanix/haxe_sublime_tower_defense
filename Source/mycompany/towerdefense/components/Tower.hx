@@ -1,5 +1,6 @@
 package mycompany.towerdefense.components;
 
+import flash.geom.Point;
 import mycompany.towerdefense.enums.TowerType;
 /**
  * ...
@@ -11,6 +12,7 @@ class Tower {
 	public var isShooting:Bool;
 	public var timeSinceLastShot:Float;
 	public var minimumShotInterval:Float;
+	public var target:Point;
 	
 	public function new (type:TowerType, level:Int, minimumShotInterval:Float) {
 		this.type = type;

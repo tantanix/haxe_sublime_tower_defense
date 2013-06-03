@@ -30,7 +30,6 @@ class BulletView extends Sprite, implements ITileView
 	public function new(towerType:TowerType, level:Int)
 	{
 		super();
-		trace(towerType, level);
 		this.towerType = towerType;
 		this.level = level;
 		this.addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
@@ -40,7 +39,6 @@ class BulletView extends Sprite, implements ITileView
 	{
 		this.removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 
-		trace("added: " + am + ", " + [towerType, level]);
 		var atlas:TextureAtlas = am.getTextureAtlas("monsterAtlas");
 		var bulletImage:Image = new Image(atlas.getTexture("bullet-fire"));
 		bulletImage.touchable = false;

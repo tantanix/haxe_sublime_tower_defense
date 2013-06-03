@@ -1,0 +1,7 @@
+Export
+.settings
+.hxtypes
+*.sublime-build
+*.sublime-project
+*.sublime-workspace
+

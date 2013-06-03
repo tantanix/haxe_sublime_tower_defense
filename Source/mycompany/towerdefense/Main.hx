@@ -35,7 +35,8 @@ class Main extends Sprite {
 		
 		Starling.multitouchEnabled = true;  // useful on mobile devices
 		Starling.handleLostContext = false; // not necessary on iOS. Saves a lot of memory!
-				
+		
+		// Starling app
 		_starlingApp = new Starling(TowerDefense, this.stage, getViewPort());
 		_starlingApp.simulateMultitouch = false;
 		_starlingApp.enableErrorChecking = false;

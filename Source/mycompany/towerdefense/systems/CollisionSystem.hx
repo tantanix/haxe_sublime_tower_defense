@@ -43,9 +43,9 @@ class CollisionSystem extends System
 			for (monsterNode in _monsterCollisionNodes) {				
 				if (Point.distance(monsterNode.position.position, towerNode.position.position) <= monsterNode.collision.radius + towerNode.collision.radius) {
 					towerNode.tower.timeSinceLastShot += time;
-					//trace(towerNode.tower.timeSinceLastShot);
+					
 					if (towerNode.tower.timeSinceLastShot >= towerNode.tower.minimumShotInterval) {
-						creator.createBullet(monsterNode.tile.currentTile, towerNode.tower.type, towerNode.tower.level, 10);
+						creator.createBullet(towerNode.position, monsterNode.tile.currentTile, towerNode.tower.type, towerNode.tower.level, 10);
 						towerNode.tower.timeSinceLastShot = 0;
 					}
 				}

@@ -24,36 +24,5 @@ class TileMovementSystem extends ListIteratingSystem<TileMovementNode> {
         position.position.x += direction.x * motion.velocityX * time;
         position.position.y += direction.y * motion.velocityY * time;
         position.rotation += motion.angularVelocity * time;
-        
-        // Apply motion damping
-        if (motion.damping > 0)
-        {
-            var xDamp:Float = Math.abs(Math.cos(position.rotation) * motion.damping * time);
-            var yDamp:Float = Math.abs(Math.sin(position.rotation) * motion.damping * time);
-            if (motion.velocityX > xDamp)
-            {
-                motion.velocityX -= xDamp;
-            }
-            else if (motion.velocityX < -xDamp)
-            {
-                motion.velocityX += xDamp;
-            }
-            else
-            {
-                motion.velocityX = 0;
-            }
-            if (motion.velocityY > yDamp)
-            {
-                motion.velocityY -= yDamp;
-            }
-            else if (motion.velocityY < -yDamp)
-            {
-                motion.velocityY += yDamp;
-            }
-            else
-            {
-                motion.velocityY = 0;
-            }
-        }
 	}
 }

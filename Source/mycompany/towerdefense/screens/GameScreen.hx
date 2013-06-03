@@ -11,6 +11,8 @@ import mycompany.towerdefense.GameConfig;
 import mycompany.towerdefense.IsoTile;
 import mycompany.towerdefense.screens.Screen;
 import mycompany.towerdefense.systems.CollisionSystem;
+import mycompany.towerdefense.systems.MovementSystem;
+import mycompany.towerdefense.systems.TileDirectionSystem;
 import mycompany.towerdefense.systems.TileDisplayOrderSystem;
 import mycompany.towerdefense.systems.TileRenderSystem;
 import mycompany.towerdefense.views.TileView;
@@ -166,25 +168,32 @@ class GameScreen extends Screen {
 		var gameSystem:GameSystem = new GameSystem();
 		var tileTraversalSystem:TileTraversalSystem = new TileTraversalSystem();
 		var tileMovementSystem:TileMovementSystem = new TileMovementSystem();
+		var movementSystem:MovementSystem = new MovementSystem();
 		var collisionSystem:CollisionSystem = new CollisionSystem();
 		var tileRenderSystem:TileRenderSystem = new TileRenderSystem();
 		var renderSystem:RenderSystem = new RenderSystem();
 		var tileDisplayOrderSystem:TileDisplayOrderSystem = new TileDisplayOrderSystem();
+		var tileDirectionSystem:TileDirectionSystem = new TileDirectionSystem();
+
 		_injector.injectInto(gameSystem);
 		_injector.injectInto(tileTraversalSystem);
 		_injector.injectInto(tileMovementSystem);
+		_injector.injectInto(movementSystem);
 		_injector.injectInto(collisionSystem);
 		_injector.injectInto(tileRenderSystem);
 		_injector.injectInto(renderSystem);
 		_injector.injectInto(tileDisplayOrderSystem);
+		_injector.injectInto(tileDirectionSystem);
 		
 		_engine.addSystem(gameSystem, 1);
 		_engine.addSystem(tileTraversalSystem, 3);
-		_engine.addSystem(tileMovementSystem, 4);
-		_engine.addSystem(collisionSystem, 5);
-		_engine.addSystem(tileRenderSystem, 6);
-		_engine.addSystem(renderSystem, 6);
-		_engine.addSystem(tileDisplayOrderSystem, 7);
+		//_engine.addSystem(movementSystem, 4);
+		_engine.addSystem(tileMovementSystem, 5);
+		_engine.addSystem(collisionSystem, 6);
+		_engine.addSystem(tileRenderSystem, 7);
+		_engine.addSystem(renderSystem, 7);
+		_engine.addSystem(tileDisplayOrderSystem, 8);
+		_engine.addSystem(tileDirectionSystem, 9);
 		
 		// Create the game
 		_creator = _injector.getInstance(EntityCreator);
@@ -215,12 +224,14 @@ class GameScreen extends Screen {
 		for (touch in touches) {
 			if (touch.phase == TouchPhase.BEGAN) {
 				if (Std.is(touch.target, Image)) {
+					// A tower has been touched so prepare for move event.
 					var targetImage:Image = cast(touch.target, Image);
 					if (targetImage.name == "tower-fire" || targetImage.name == "tower-ice" || targetImage.name == "tower-lightning") {
 						_touchedTower = targetImage;
 					}
 				}
 			} else if (touch.phase == TouchPhase.MOVED) {
+				// Create the draggable tower.
 				if (_touchedTower != null) {
 					if (_floatingTower == null) {
 						var towerType:TowerType = null;
@@ -234,6 +245,7 @@ class GameScreen extends Screen {
 						_injector.injectInto(_floatingTower);
 						this.addChild(_floatingTower);
 					}
+					// We want the tower to snap to traversable and vacant tiles.
 					_targetTile = _map.getHitTile(touch.getLocation(this));
 					if (_targetTile != null) {
 						_floatingTower.x = _targetTile.x;
@@ -244,13 +256,14 @@ class GameScreen extends Screen {
 				if (_touchedTower != null) {
 					_touchedTower = null;	
 				}
-
+				// Create the tower at the target tile.
 				if (_targetTile != null) {
 					if (_targetTile.traversable) {
 						_targetTile.traversable = false;
 						_creator.createTower(_targetTile, _floatingTower.type, _floatingTower.level, 180);
 					}
 				}
+				// Remove the draggable temp tower.
 				if (_floatingTower != null) {
 					this.removeChild(_floatingTower);
 					_floatingTower = null;

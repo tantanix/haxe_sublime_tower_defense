@@ -35,9 +35,10 @@ class TileTraversalSystem extends ListIteratingSystem<TileTraversalNode> {
 
 	private function updateNode(node:TileTraversalNode, time:Float):Void {
 		if (node.tile.pathNodes != null) {
-			node.tile.currentTile.traversable = true;
+			node.tile.currentTile.traversable = true; // Set the previous tile back to traversable
 			node.tile.currentTile = map.getHitTile(node.position.position);
-			node.tile.currentTile.traversable = false;
+			node.tile.currentTile.traversable = false; // Set the same/new tile not traversable since it is stepping on it
+			
 			if (Point.distance(node.position.position, new Point(node.tile.currentTile.x, node.tile.currentTile.y)) < 0.5) {
 				//trace("Stepped tile: " + node.tile.currentTile.row + ", " + node.tile.currentTile.col);
 					
